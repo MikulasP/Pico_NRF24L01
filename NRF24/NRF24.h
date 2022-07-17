@@ -101,6 +101,18 @@ public:
     //*OK
 
     /**
+    * @brief Set ChipEnable high for immediate TX data transfer
+    */
+    void SetTXHigh();
+    //*OK
+
+    /**
+    * @brief Set ChipEnable Low manually in TX mode
+    */
+    void SetTXLow();
+    //*OK
+
+    /**
     * @brief Put the device into RX mode and start listening on opened data pipes
     * 
     * @return true: Device started listening | false: Operation cannot be done (not in RX mode, already listening, ...)

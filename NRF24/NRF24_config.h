@@ -13,7 +13,7 @@
 
     /* Pins */
 
-#define _NRF_SPI    spi0        //SPI bus 0
+#define _NRF_SPI                spi0        //SPI bus 0
 #define _NRF_SPI_BAUDRATE       5000000     // 5 MBit/s
 #define _NRF_SPI_CHIPSELECT     0
 #define _NRF_SPI_CHIPSELECTNOT  1
@@ -24,6 +24,22 @@
 //#define _NRF_SPI_SCK            6
 //#define _NRF_SPI_MOSI           7
 //#define _NRF_SPI_MISO           4
+
+/*
+
+SPI 0 Pins:
+	sck: GP6
+	mosi: GP7
+	miso: GP4
+
+ce_tx = Pin(19, mode=Pin.OUT, value=0)
+csn_tx = Pin(20, mode=Pin.OUT, value=1)
+#irq_tx = Pin(21, mode=Pin.IN)
+ce_rx = Pin(17, mode=Pin.OUT, value=0)
+csn_rx = Pin(16, mode=Pin.OUT, value=1)
+#irq_rx = Pin(18, mode=Pin.IN)
+
+*/
 
 /*******************************************************************************************************/
 
@@ -254,6 +270,10 @@ enum AUTO_RD {
 #define W_TX_PAYLOAD_NOACK  0xB0     //Disables AUTOACK on this specific packet (Used in TX mode)
 #define NOP                 0xFF     //No operation. Can be used to read the STATUS register
 
+
+/*******************************************************************************************************/
+
+//#define uint8_t _BV(uint8_t x) { return (1<<x); }
 
 /*******************************************************************************************************/
 

@@ -199,14 +199,7 @@ uint8_t NRF24::GetCRCLength() {
 }
 
 void NRF24::SetAutoAck(bool ack) {
-    if (ack)
-        WriteReg(FEATURE, ReadReg(FEATURE) | 0x02);
-    else
-        WriteReg(FEATURE, ReadReg(FEATURE) & 0x05);
-}
-
-bool NRF24::GetAutoAck() {
-    return (ReadReg(FEATURE) & 0x02) >> 1;
+    WriteReg(EN_AA, (ack ? 0x3F : 0x00));
 }
 
 uint8_t NRF24::ReadReg(uint8_t reg) {
@@ -291,6 +284,7 @@ void NRF24::Init(const _NRF_SPI_PINOUT _pinout)
 #else
     gpio_set_function(pinout.miso, GPIO_FUNC_SPI);
 #endif
+    WriteReg(STATUS, ReadReg(STATUS) | _BV(MAX_RT));   //Clear MAX_RT bit
     WriteCommand(NOP);  //Updating the stored status register value
 }
 
@@ -377,6 +371,16 @@ void NRF24::SetTXMode(bool power_up) {
     prim_rx_mode = false;
 }
 
+void NRF24::SetTXHigh() {
+    if (!prim_rx_mode)
+        ChipEnable();
+}
+
+void NRF24::SetTXLow() {
+    if (!prim_rx_mode)
+        ChipEnableNot();
+}
+
 bool NRF24::StartListening() {
     if (!IsListening()){
         ChipEnable();
@@ -404,6 +408,7 @@ bool NRF24::Read(uint8_t *dst, uint8_t len) {
         ChipSelectNot();
         status_reg = rx_buff[0];
         memcpy(dst, (rx_buff + 1), len);
+        WriteReg(STATUS, ReadReg(STATUS) | _BV(RX_DR));
         return true;
     }
     return false;
@@ -411,6 +416,7 @@ bool NRF24::Read(uint8_t *dst, uint8_t len) {
 
 bool NRF24::Write(uint8_t *src, uint8_t len) {
     if (!TX_FIFO_Full() && len > 0 && len <= payload_size) {
+        WriteReg(STATUS, ReadReg(STATUS) | _BV(MAX_RT));   //Clear MAX_RT bit
         tx_buff[0] = W_TX_PAYLOAD;
         memcpy((tx_buff + 1), src, len);
         ChipSelect();
