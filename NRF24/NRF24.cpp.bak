@@ -414,20 +414,6 @@ bool NRF24::Read(uint8_t *dst, uint8_t len) {
     return false;
 }
 
-bool NRF24::WriteConst(uint8_t *src, uint8_t len) {
-    if (!TX_FIFO_Full() && len > 0 && len <= payload_size) {
-        WriteReg(STATUS, ReadReg(STATUS) | _BV(MAX_RT));   //Clear MAX_RT bit
-        tx_buff[0] = W_TX_PAYLOAD;
-        memcpy((tx_buff + 1), src, len);
-        ChipSelect();
-        spi_write_read_blocking(_NRF_SPI, tx_buff, rx_buff, (len + 1));
-        ChipSelectNot();
-        status_reg = rx_buff[0];
-        return true;
-    }
-    return false;
-}
-
 bool NRF24::Write(uint8_t *src, uint8_t len) {
     if (!TX_FIFO_Full() && len > 0 && len <= payload_size) {
         WriteReg(STATUS, ReadReg(STATUS) | _BV(MAX_RT));   //Clear MAX_RT bit
@@ -436,10 +422,6 @@ bool NRF24::Write(uint8_t *src, uint8_t len) {
         ChipSelect();
         spi_write_read_blocking(_NRF_SPI, tx_buff, rx_buff, (len + 1));
         ChipSelectNot();
-        ChipEnable();
-        sleep_us(20);       //Double the required 10us
-        ChipEnableNot();
-        sleep_us(130);      //Give time for TX Settling
         status_reg = rx_buff[0];
         return true;
     }
