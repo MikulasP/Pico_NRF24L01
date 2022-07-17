@@ -1,6 +1,6 @@
 # Pico_NRF24L01
 
-C++ library for the NRF24L01 transceiver module, to be used with a Raspberry Pi Pico microcontroller. 
+C++ library for the NRF24L01 transceiver module, to be used with the Raspberry Pi Pico microcontroller. 
 
 The module's documentation can be found here:
 https://www.sparkfun.com/datasheets/Components/SMD/nRF24L01Pluss_Preliminary_Product_Specification_v1_0.pdf
