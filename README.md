@@ -9,6 +9,6 @@ More info on the RPi Pico and it's C++ SDK:
 https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html
 
 ### Note:
-This library is an ongoing project, and is in a highéy unfinished state.
+This library is an ongoing project, and is in a highly unfinished state.
 Some of the functions are not tested, and the code contains not (yet) used parts.
 New features and further optimisations due to come in later updates.
