@@ -4,8 +4,8 @@
 
 
 
-//Defined in globalInc.h
-//size_t _BV(uint8_t x) { return (1<<x); }
+//shift 1 bit by x to the left
+size_t _BV(size_t x) { return (1<<x); }
 
 inline void NRF24::ChipSelect() { gpio_put(pinout.csn, _NRF_SPI_CHIPSELECT); }
 
