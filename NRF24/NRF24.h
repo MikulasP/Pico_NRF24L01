@@ -1,12 +1,21 @@
-#ifndef NRF24L01_OK
-#define NRF24L01_OK
+//#ifndef NRF24L01_OK
 
+
+#include <cstddef>
+#include <string.h>
+//#include <stdint.h>
+
+#include "pico/stdlib.h"
+#include "pico/printf.h"
+#include "hardware/spi.h"
+
+#include "../utlib/utlib.h"
 
 
     /* Data structures */
 
 //For non-common SPI
-
+/*
 struct _NRF_SPI_PINOUT {
     uint8_t sck;
     uint8_t mosi;
@@ -15,15 +24,15 @@ struct _NRF_SPI_PINOUT {
     uint8_t csn;
     uint8_t irq;
 };
-
+*/
 
 //For common SPI
-/*
+
 struct _NRF_SPI_PINOUT {
     uint8_t ce;
     uint8_t csn;
     uint8_t irq;
-};*/
+};
 
 //Radio power level
 enum PA_LEVEL {_MIN = 0, _LOW = 2, _HIGH = 4, _MAX = 6};
@@ -35,11 +44,13 @@ enum DATA_RATE {_1M = 0, _2M = 8, _250K = 32};
 enum ADDR_WIDTH {_3B = 1, _4B = 2, _5B = 3};
 
 //
-size_t _BV(uint8_t x);
+//size_t _BV(uint8_t x);
 
 class NRF24 {
 
 private:
+
+    uint8_t module_id;
 
     _NRF_SPI_PINOUT pinout;         //Device pinout
     uint8_t payload_size = 32;      //Fixed payload size
@@ -49,7 +60,7 @@ private:
     bool debug_messages = false;    //Print debug messages to serial
     bool power_state = false;       //Radio hw power state. true: Standby-I mode | false: Power Down mode
     bool prim_rx_mode = false;      //PRIM_RX mode. true: RX mode | false: TX mode
-    bool var_payload_size = false;  //Enable or disable variable payload size (payload_size will be ignored) //!Not implemented in Read function yet!
+    //bool var_payload_size = false;  //Enable or disable variable payload size (payload_size will be ignored) //!Not implemented in Read function yet!
 
     uint8_t rx_buff[32 + 1];        //RX buffer for payload read
     uint8_t tx_buff[32 + 1];        //TX buffer for payload write
@@ -62,10 +73,18 @@ public:
     /**
     * @brief Set up the chip for normal operation
     * 
-    * @param _pinout Control pins of the device
+    * @param module_id Identification number for the module
+    * @param pinout Control pins of the device
     */
-    void Init(const _NRF_SPI_PINOUT _pinout);
+    void Init(const uint8_t module_id, const _NRF_SPI_PINOUT pinout);
     //*OK
+
+    /**
+     * @brief Get the Module ID
+     * 
+     * @return uint8_t Module ID
+     */
+    uint8_t GetModuleID(void);
 
     /**
     * @brief Checks if the device is connected and working
@@ -217,8 +236,8 @@ public:
     * @param len Number of bytes to write
     */
     bool Write(uint8_t *src, uint8_t len);
-    //*OK
-    
+    //TODO
+
     /**
     * @brief Read <len> bytes of data from the RX FIFO. Returns true if the operation was successfull
     * 
@@ -325,6 +344,10 @@ public:
     
     //
     //void StopConstantCarrier(void);
+    //!Not yet implemented function
+
+    //Send Echo-Ping request
+    //void Echo(size_t num);
     //!Not yet implemented function
 
 //  --------------------------------------------------------------------------------
@@ -655,4 +678,4 @@ private:
     //!Not yet implemented function
 
 };
-#endif
+//#endif
