@@ -1,14 +1,11 @@
-#include <cstring>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdio.h>
-#include "pico/stdlib.h"
-#include "hardware/spi.h"
-
+//#include "../globalInc.h"
 #include "NRF24.h"
 #include "NRF24_config.h"
 
-size_t _BV(uint8_t x) { return (1<<x); }
+
+
+//Defined in globalInc.h
+//size_t _BV(uint8_t x) { return (1<<x); }
 
 inline void NRF24::ChipSelect() { gpio_put(pinout.csn, _NRF_SPI_CHIPSELECT); }
 
@@ -254,9 +251,14 @@ void NRF24::WriteCommand(uint8_t command) {
     ChipSelectNot();
 }
 
-void NRF24::Init(const _NRF_SPI_PINOUT _pinout) 
+void NRF24::Init(const uint8_t module_id, const _NRF_SPI_PINOUT pinout) 
 {
-    pinout = _pinout;
+    printf("NRF24: Initializing...\r\n");
+
+    this->module_id = module_id;
+    printf("NRF24: Module ID: %d\r\n", this->module_id);
+
+    this->pinout = pinout;
     //Init and set SPI control pins
     gpio_init(pinout.ce);
     gpio_init(pinout.csn);
@@ -286,6 +288,7 @@ void NRF24::Init(const _NRF_SPI_PINOUT _pinout)
 #endif
     WriteReg(STATUS, ReadReg(STATUS) | _BV(MAX_RT));   //Clear MAX_RT bit
     WriteCommand(NOP);  //Updating the stored status register value
+    printf("NRF24: Module %d init OK!\r\n", this->module_id);
 }
 
 void NRF24::EraseTempBuffs() {
@@ -445,3 +448,9 @@ bool NRF24::Write(uint8_t *src, uint8_t len) {
     }
     return false;
 }
+
+//  --------------------------------------------------------------------------------
+/*      Test Functions  */
+//  --------------------------------------------------------------------------------
+
+//
