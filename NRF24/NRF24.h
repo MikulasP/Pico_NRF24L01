@@ -9,7 +9,8 @@
 #include "pico/printf.h"
 #include "hardware/spi.h"
 
-#include "../utlib/utlib.h"
+//shift 1 bit by x to the left
+size_t _BV(size_t x);
 
 
     /* Data structures */
